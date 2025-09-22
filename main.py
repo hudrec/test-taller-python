@@ -143,17 +143,17 @@ async def get_user_activity(user_id: int):
 async def add_friend(friend_request: FriendRequest):
     """
     Add a friend for the specified user
-    
+
     - **user_id**: ID of the user who wants to add a friend
     - **friend_id**: ID of the user to be added as a friend (from request body)
     """
     try:
         user = User.get(User.id == friend_request.user_id)
         friend = User.get(User.id == friend_request.friend_id)
-        
+
         result = user.add_friend(friend)
         return result
-        
+
     except User.DoesNotExist:
         raise HTTPException(status_code=404, detail="User not found")
     except ValueError as e:

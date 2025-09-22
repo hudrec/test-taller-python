@@ -90,19 +90,21 @@ class User(BaseUser):
         Get all friends of the user
         """
         # Friends where current user is the user in the friendship
-        friends_as_user = (User
-                        .select()
-                        .join(Friendship, on=(User.id == Friendship.friend))
-                        .where(Friendship.user == self))
-        
+        friends_as_user = (
+            User.select()
+            .join(Friendship, on=(User.id == Friendship.friend))
+            .where(Friendship.user == self)
+        )
+
         # Friends where current user is the friend in the friendship
-        friends_as_friend = (User
-                            .select()
-                            .join(Friendship, on=(User.id == Friendship.user))
-                            .where(Friendship.friend == self))
-        
+        friends_as_friend = (
+            User.select()
+            .join(Friendship, on=(User.id == Friendship.user))
+            .where(Friendship.friend == self)
+        )
+
         # Combine both queries
-        return (friends_as_user | friends_as_friend)
+        return friends_as_user | friends_as_friend
 
 
 class CreditCard(BaseCreditCard):
