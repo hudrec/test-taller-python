@@ -1,14 +1,15 @@
 # Minivenmo API
 
-A simple payment processing API built with FastAPI and SQLite, inspired by Venmo. This API allows users to create accounts, check balances, and send payments to other users.
+A simple payment processing API built with FastAPI and SQLite, inspired by Venmo. This API allows users to create accounts, check balances, send payments to other users, and manage friend relationships.
 
 ## Features
 
-- User account creation
-- Balance management
+- User account creation and management
+- Balance checking and management
 - Payment processing between users
-- Credit card integration for overdraft protection
-- Transaction history feed
+- Friend management system
+- Transaction history and activity feed
+- Comprehensive test coverage
 
 ## Prerequisites
 
@@ -19,7 +20,7 @@ A simple payment processing API built with FastAPI and SQLite, inspired by Venmo
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/hudrec/test-taller-python.git
    cd test-taller-python
    ```
 
@@ -34,6 +35,10 @@ A simple payment processing API built with FastAPI and SQLite, inspired by Venmo
    pip install -r requirements.txt
    ```
 
+## Database Setup
+
+The application uses SQLite with Peewee ORM. The database will be automatically created when you first run the application.
+
 ## Running the Application
 
 Start the development server:
@@ -43,36 +48,46 @@ uvicorn main:app --reload
 
 The API will be available at `http://127.0.0.1:8000`
 
+## Running Tests
+
+To run the test suite:
+```bash
+pytest test_api.py -v
+```
+
 ## API Documentation
 
 Once the server is running, you can access:
-- Interactive API documentation: `http://127.0.0.1:8000/docs`
-- Alternative documentation: `http://127.0.0.1:8000/redoc`
+- Interactive API documentation (Swagger UI): `http://127.0.0.1:8000/docs`
+- Alternative documentation (ReDoc): `http://127.0.0.1:8000/redoc`
 
-## Endpoints
+## API Endpoints
 
-### Create User
-- **POST** `/create-user`
-  - Request body: `{ "name": "John Doe", "balance": 100.0 }`
-  - Creates a new user with the specified name and initial balance
+### Users
+- `POST /create-user` - Create a new user
+- `GET /users` - List all users
+- `GET /users/{user_id}/activity` - Get user activity feed
+- `POST /users/add-friend` - Add a friend
 
-### Make a Payment
-- **POST** `/pay`
-  - Request body: `{ "payer": 1, "amount": 50.0, "receiver": 2, "reason": "Dinner" }`
-  - Processes a payment from one user to another
-  - If the payer doesn't have enough balance, it will attempt to charge their credit card
-
-## Database
-
-The application uses SQLite with the database file `minivenmo.db` which is automatically created on first run.
+### Payments
+- `POST /pay` - Send payment to another user
 
 ## Project Structure
 
-- `main.py` - Main FastAPI application and endpoints
-- `models.py` - Database models and business logic
-- `requirements.txt` - Python dependencies
-- `.gitignore` - Specifies intentionally untracked files to ignore
+- `main.py` - Main FastAPI application and route handlers
+- `models.py` - Database models using Peewee ORM
+- `database.py` - Database connection and initialization
+- `test_api.py` - Test cases for the API endpoints
+- `requirements.txt` - Project dependencies
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
