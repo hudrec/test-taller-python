@@ -1,0 +1,5 @@
+.venv/
+__pycache__
+minivenmo.db
+minivenmo.db-shm
+minivenmo.db-wal
