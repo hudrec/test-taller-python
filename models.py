@@ -45,25 +45,13 @@ class User(BaseUser):
         """
         Retrieve all activities related to the user including payments and friend additions
         """
-        # Get user's payment activities
-        payment_activities = (
-            Feed.select()
-            .where((Feed.user == self) | (Feed.related_user == self))
-            .order_by(Feed.created_at.desc())
-        )
+        # Get all activities where user is involved
+        activities = list(Feed.select().where(
+            (Feed.user == self) | 
+            (Feed.related_user == self)
+        ).order_by(Feed.created_at.desc()))
 
-        # Get friend activities
-        friend_activities = (
-            Feed.select()
-            .where((Feed.user.in_(self.friends())) & (Feed.feed_type == "friend_add"))
-            .order_by(Feed.created_at.desc())
-        )
-
-        # Combine and sort all activities by creation time
-        all_activities = list(payment_activities) + list(friend_activities)
-        all_activities.sort(key=lambda x: x.created_at, reverse=True)
-
-        return all_activities
+        return activities
 
     def add_friend(self, friend: "User"):
         """
@@ -71,6 +59,10 @@ class User(BaseUser):
         """
         if self == friend:
             raise ValueError("Cannot add yourself as a friend")
+
+        # Check if already friends
+        if friend in self.friends():
+            raise ValueError(f"{friend.name} is already your friend")
 
         # Create friendship (assuming a many-to-many relationship through a Friendship model)
         Friendship.create(user=self, friend=friend)
@@ -90,21 +82,19 @@ class User(BaseUser):
         Get all friends of the user
         """
         # Friends where current user is the user in the friendship
-        friends_as_user = (
-            User.select()
-            .join(Friendship, on=(User.id == Friendship.friend))
-            .where(Friendship.user == self)
-        )
-
+        friends_as_user = (User
+                        .select()
+                        .join(Friendship, on=(User.id == Friendship.friend))
+                        .where(Friendship.user == self))
+        
         # Friends where current user is the friend in the friendship
-        friends_as_friend = (
-            User.select()
-            .join(Friendship, on=(User.id == Friendship.user))
-            .where(Friendship.friend == self)
-        )
-
+        friends_as_friend = (User
+                            .select()
+                            .join(Friendship, on=(User.id == Friendship.user))
+                            .where(Friendship.friend == self))
+        
         # Combine both queries
-        return friends_as_user | friends_as_friend
+        return (friends_as_user | friends_as_friend)
 
 
 class CreditCard(BaseCreditCard):

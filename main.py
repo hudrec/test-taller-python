@@ -3,7 +3,6 @@ from fastapi import FastAPI, Form, HTTPException
 from pydantic import BaseModel
 from models import User, CreditCard, Feed
 from database import create_tables, close_connection, db, Friendship
-from minivenmo import MiniVenmo
 from typing import List
 
 
